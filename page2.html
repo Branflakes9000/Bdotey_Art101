@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page 2</title>
+    <title>Dream Transformation</title>
     <style>
         * {
             margin: 0;
@@ -31,11 +31,45 @@
                 #fffacd 50%, 
                 #add8e6 75%, 
                 #87ceeb 100%);
+            transition: background 3s ease-in-out;
         }
 
-        /* Gradient Sections - no longer needed */
-        .gradient-section {
-            display: none;
+        .gradient-container.galaxy {
+            background: radial-gradient(ellipse at center,
+                #0a0a2a 0%,
+                #1a1a4a 25%,
+                #2d1b4a 50%,
+                #1a1a4a 75%,
+                #0a0a2a 100%);
+        }
+
+        /* Stars background */
+        .stars-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, #fff, transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: twinkle 4s ease-in-out infinite;
+        }
+
+        .stars-bg.visible {
+            opacity: 1;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
         }
 
         /* Bubbles */
@@ -50,7 +84,7 @@
             box-shadow: 
                 inset 0 0 20px rgba(255, 255, 255, 0.3),
                 0 0 10px rgba(255, 255, 255, 0.2);
-            animation: float 6s ease-in-out infinite;
+            transition: all 2s ease-in-out;
         }
 
         .bubble::before {
@@ -63,6 +97,7 @@
             background: rgba(255, 255, 255, 0.9);
             border-radius: 50%;
             box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            transition: all 2s ease-in-out;
         }
 
         .bubble::after {
@@ -74,6 +109,38 @@
             height: 4px;
             background: rgba(255, 255, 255, 0.7);
             border-radius: 50%;
+            transition: all 2s ease-in-out;
+        }
+
+        /* Star transformation */
+        .bubble.star {
+            background: radial-gradient(circle at center,
+                #fff 0%,
+                #ffd700 20%,
+                #ff6b6b 40%,
+                #4ecdc4 60%,
+                #45b7d1 80%,
+                #96ceb4 100%);
+            border: 2px solid #fff;
+            box-shadow: 
+                0 0 20px #fff,
+                0 0 40px #ffd700,
+                0 0 60px #ff6b6b;
+            animation: starPulse 2s ease-in-out infinite;
+        }
+
+        .bubble.star::before {
+            background: #fff;
+            box-shadow: 0 0 10px #fff;
+        }
+
+        .bubble.star::after {
+            background: #ffd700;
+        }
+
+        @keyframes starPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
 
         /* Bubble Sizes */
@@ -97,13 +164,42 @@
             height: 80px;
         }
 
-        /* Floating Animation */
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px) rotate(0deg);
+        /* Circle formation animation */
+        .bubble.circle-formation {
+            animation: orbit 8s linear infinite;
+            transform-origin: center;
+        }
+
+        @keyframes orbit {
+            0% {
+                transform: rotate(0deg) translateX(12vw) rotate(0deg);
             }
-            50% {
-                transform: translateY(-20px) rotate(5deg);
+            100% {
+                transform: rotate(360deg) translateX(12vw) rotate(-360deg);
+            }
+        }
+
+        /* Container positioning and rotation for bubbles */
+        #bubbles-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+        }
+
+        #bubbles-container.rotating {
+            animation: containerRotate 10s linear infinite;
+            transform-origin: center;
+        }
+
+        @keyframes containerRotate {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
             }
         }
 
@@ -117,30 +213,48 @@
             height: 100vh;
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+
+        .content.visible {
+            opacity: 1;
         }
 
         .content h1 {
             font-size: 3rem;
             text-align: center;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
             padding: 2rem;
             border-radius: 20px;
             backdrop-filter: blur(10px);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: white;
-            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
         }
 
-        .content h1:hover {
+        /* Back button */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .back-btn.visible {
+            opacity: 1;
+        }
+
+        .back-btn:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
-        }
-
-        .content h1:active {
-            transform: scale(0.98);
         }
 
         /* Responsive Design */
@@ -154,28 +268,29 @@
 </head>
 <body>
     <!-- Gradient Background -->
-    <div class="gradient-container">
-        <div class="gradient-section purple-section"></div>
-        <div class="gradient-section pink-section"></div>
-        <div class="gradient-section yellow-section"></div>
-        <div class="gradient-section blue-section"></div>
+    <div class="gradient-container" id="gradient-container">
+        <div class="stars-bg" id="stars-bg"></div>
     </div>
 
     <!-- Bubbles -->
     <div id="bubbles-container"></div>
 
     <!-- Content -->
-    <div class="content">
-        <a href="page2.html">
-            <h1>~Start Dreaming~</h1>
-        </a>
+    <div class="content" id="content">
+        <h1>✨ Welcome to the Dream Realm ✨</h1>
     </div>
 
+    <!-- Back Button -->
+    <a href="index.html" class="back-btn" id="back-btn">← Back to Dreams</a>
+
     <script>
+        let bubbles = [];
+        let animationPhase = 0;
+
         // Create bubbles dynamically
         function createBubbles() {
             const container = document.getElementById('bubbles-container');
-            const bubbleCount = 50;
+            const bubbleCount = 30;
             const sizes = ['bubble-small', 'bubble-medium', 'bubble-large', 'bubble-xl'];
             
             for (let i = 0; i < bubbleCount; i++) {
@@ -186,34 +301,84 @@
                 bubble.style.left = Math.random() * 100 + '%';
                 bubble.style.top = Math.random() * 100 + '%';
                 
-                // Random animation delay
-                bubble.style.animationDelay = Math.random() * 6 + 's';
-                bubble.style.animationDuration = (4 + Math.random() * 4) + 's';
-                
                 container.appendChild(bubble);
+                bubbles.push(bubble);
             }
         }
 
-        // Initialize bubbles when page loads
-        window.addEventListener('load', createBubbles);
-
-        // Add some interactivity - bubbles follow mouse slightly
-        document.addEventListener('mousemove', (e) => {
-            const bubbles = document.querySelectorAll('.bubble');
-            const mouseX = e.clientX / window.innerWidth;
-            const mouseY = e.clientY / window.innerHeight;
-            
+        // Phase 1: Bubbles come together in a circle
+        function startCircleFormation() {
             bubbles.forEach((bubble, index) => {
-                const speed = (index % 3 + 1) * 0.5;
-                const currentLeft = parseFloat(bubble.style.left);
-                const currentTop = parseFloat(bubble.style.top);
+                // Position all bubbles at the center of the container
+                bubble.style.left = '50%';
+                bubble.style.top = '50%';
+                bubble.style.transition = 'all 3s ease-in-out';
                 
-                const newLeft = currentLeft + (mouseX - 0.5) * speed;
-                const newTop = currentTop + (mouseY - 0.5) * speed;
+                // Calculate animation delay to stagger the stars around the orbit
+                const delay = (index / bubbles.length) * 8; // 8 seconds is the animation duration
+                bubble.style.animationDelay = `-${delay}s`;
                 
-                bubble.style.left = Math.max(0, Math.min(100, newLeft)) + '%';
-                bubble.style.top = Math.max(0, Math.min(100, newTop)) + '%';
+                // Add a delay for each bubble to create a staggered effect
+                setTimeout(() => {
+                    bubble.classList.add('circle-formation');
+                }, index * 50);
             });
+
+            // Start container rotation after bubbles are positioned
+            setTimeout(() => {
+                document.getElementById('bubbles-container').classList.add('rotating');
+            }, 3000);
+        }
+
+        // Phase 2: Transform to stars and change background
+        function transformToStars() {
+            // Change background to galaxy
+            document.getElementById('gradient-container').classList.add('galaxy');
+            document.getElementById('stars-bg').classList.add('visible');
+
+            // Transform bubbles to stars
+            bubbles.forEach((bubble, index) => {
+                setTimeout(() => {
+                    bubble.classList.add('star');
+                    bubble.classList.remove('circle-formation');
+                }, index * 100);
+            });
+
+            // Show content
+            setTimeout(() => {
+                document.getElementById('content').classList.add('visible');
+                document.getElementById('back-btn').classList.add('visible');
+            }, 2000);
+        }
+
+        // Initialize animation sequence
+        window.addEventListener('load', () => {
+            createBubbles();
+            
+            // Start the magical transformation sequence
+            setTimeout(startCircleFormation, 1000);
+            setTimeout(transformToStars, 4000);
+        });
+
+        // Add some interactivity - stars follow mouse slightly
+        document.addEventListener('mousemove', (e) => {
+            if (animationPhase >= 2) {
+                const stars = document.querySelectorAll('.bubble.star');
+                const mouseX = e.clientX / window.innerWidth;
+                const mouseY = e.clientY / window.innerHeight;
+                
+                stars.forEach((star, index) => {
+                    const speed = (index % 3 + 1) * 0.3;
+                    const currentLeft = parseFloat(star.style.left);
+                    const currentTop = parseFloat(star.style.top);
+                    
+                    const newLeft = currentLeft + (mouseX - 0.5) * speed;
+                    const newTop = currentTop + (mouseY - 0.5) * speed;
+                    
+                    star.style.left = Math.max(0, Math.min(100, newLeft)) + '%';
+                    star.style.top = Math.max(0, Math.min(100, newTop)) + '%';
+                });
+            }
         });
     </script>
 </body>
